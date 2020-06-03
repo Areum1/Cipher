@@ -34,8 +34,11 @@
         var oddFlag = false; // 
         var enc_result = ""; // 암호화 한 결과
 
+        
+
         // 모든 함수 실행은 여기서
         function init() {
+            
             setBoard();
             setStr();
             strEncryption(key.value, str.value);
@@ -78,11 +81,29 @@
         }
 
         function setStr() {
+            // for (let i = 0; i < (str.value).length; i++) {
+            //     if ((str.value).charAt(i) == 'z') //z를 q로 바꿔줘서 처리함.
+            //     {
+            //         str.value = (str.value).substring(0, i) + 'q' + (str.value).substring(i + 1, (str.value).length);
+            //         zCheck += 1;
+            //     }
+            //     else {
+            //         zCheck += 0;
+            //     }
+            // }
+
             for (let i = 0; i < (str.value).length; i++) {
-                if ((str.value).charAt(i) == 'z') //z를 q로 바꿔줘서 처리함.
+                if ((str.value).charAt(i) === 'z') //z를 q로 바꿔줘서 처리함.
                 {
-                    str.value = (str.value).substring(0, i) + 'q' + (str.value).substring(i + 1, (str.value).length);
-                    zCheck += 1;
+                    if((str.value).charAt(i-1) === 'q'){
+                        console.log("hi", (str.value).charAt(i), (str.value).charAt(i+1));
+                        // str.value = (str.value).substring(0, i) + 'z' + (str.value).substring(i + 1, (str.value).length);
+                        console.log("str : ", str.value);
+                    }
+                    else {
+                        str.value = (str.value).substring(0, i) + 'q' + (str.value).substring(i + 1, (str.value).length);
+                        zCheck += 1;
+                    }
                 }
                 else {
                     zCheck += 0;
@@ -119,6 +140,7 @@
                 playFair += 'x';
                 oddFlag = true;
             }
+            console.log(playFair);
 
             for (let i = 0; i < playFair.length; i+=2)
             {
@@ -262,10 +284,9 @@ for (let i = 0; i < alphabetBoard.length; i++) {
 }
 
 할 일
-- 첫 번째 중복은 x붙어서 잘 나오는데 그 이후는 안 나옴
 - 코드 정리
-- css (이건 내일 학교가서 해도 괜찮을 듯)
 - z와 i/j 처리?
-- 키에 z를 쓰면 y가 알파벳 판에서 사라지네요...?
 - input 타입인데 못 쓰는 input?
+- 대문자일때 
+- 
 -->

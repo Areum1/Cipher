@@ -96,14 +96,14 @@
             }
             
 
-            // console.log(str.value); //특수문자, 한글
+            console.log(str.value); //특수문자, 한글
 
             if(regExp.test(key.value)){
                 var t = (key.value).replace(regExp, "");
                 t = (key.value).replace(RegExpHG,"");
                 key.value = t;
             }
-            // console.log(key.value); //특수문자
+            console.log(key.value); //특수문자
         }
 
         function removeElements() {
@@ -180,39 +180,34 @@
 
             for (let i = 0; i < str.length; i+= 2) // arraylist 세팅
             {
-                var tmpArr = new Array(2);                                                                                                                                                                
+                var tmpArr = new Array(2);
                 tmpArr[0] = str.charAt(i);
-                // console.log("1 zCheck: ",zCheck);
-                for (let j = 0; j < str.length; j++) {                             
+                for (let j = 0; j < str.length; j++) {
                     if (str.charAt(i) === str.charAt(i + 1)) //글이 반복되면 x추가
                     {
-                        if(zCheck.charAt(i,1) === '1' ^ zCheck.charAt(i+1,1) === '1'){
-                            console.log("둘이 xor");
-                            tmpArr = str.charAt(i+1,1);
+                        if(zCheck.charAt(i,1) === '1' xor zCheck.charAt(i+1,1) === '1'){
+                            
                         }
-                        else{
-                            tmpArr += 'x';
-                            i--;
-                        }
+                        tmpArr += 'x';
+                        i--;
                     }
                     else {
                         tmpArr[1] = str.charAt(i + 1);
-                    }                                                                                                                      
+                    }
                 }
                 playFair += tmpArr;
                 playFair = playFair.replace(/,/gi, "");
-                console.log("1playFair : ",playFair);
+
             }
 
             if (playFair.length % 2 === 1) {
                 playFair += 'x';
                 oddFlag = true;
             }
-            // console.log(playFair);
+            console.log(playFair);
 
             for (let i = 0; i < playFair.length; i+= 2) {
                 var tmpArr = new Array(2);
-                // console.log("22 zCheck: ",zCheck);
                 if(playFair[i] === playFair[i+1]){
                     if(zCheck.charAt(i, 1) === '1'){
                         tmpArr[0] = 'q';
@@ -225,11 +220,9 @@
                     for (let j = 0; j < tmpArr.length; j++) {
                         encPlayFair += tmpArr[j];
                     }
+                    
                     continue;
                 }
-
-                console.log("2playFair : ",playFair);
-
                 for (let j = 0; j < alphabetBoard.length; j++) //쌍자암호의 각각 위치체크
                 {
                     for (let k = 0; k < alphabetBoard[j].length; k++) {
@@ -304,7 +297,7 @@
                     }
                 }
 
-                // console.log("if 문 시작하기 전에 확인 x1,x2,y1,y2 : ", x1, x2, y1, y2);
+                console.log("if 문 시작하기 전에 확인 x1,x2,y1,y2 : ", x1, x2, y1, y2);
                 if (x1 === x2) //행이 같은경우
                 {
                     tmpArr[0] = alphabetBoard[x1][(y1 + 4) % 5];
