@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <script
+  src="https://code.jquery.com/jquery-1.12.4.min.js"
+  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+  crossorigin="anonymous"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#input1").keyup(function(event){
+                    if(event.keyCode !=8){
+                        var result = "keycode="+ event.keyCode + " value="+ String.fromCharCode(event.keyCode);
+                        var preHtml = $("#result").html();
+                        $("#result").html(preHtml+ "<br />" +result);
+                    }
+                    if($(this).val() ==""){
+                        $("#result").empty();
+                    }
+
+                });
+                $("#onlyNumber").keyup(function(event){
+                    if (!(event.keyCode >=37 && event.keyCode<=40)) {
+                        var inputVal = $(this).val();
+                        $(this).val(inputVal.replace(/[^0-9]/gi,''));
+                    }
+                });
+                $("#onlyAlphabet").keyup(function(event){
+                    if (!(event.keyCode >=37 && event.keyCode<=40)) {
+                        var inputVal = $(this).val();
+                        $(this).val(inputVal.replace(/[^a-z]/gi,''));    
+                    }
+                });
+                $("#notHangul").keyup(function(event){
+                    if (!(event.keyCode >=37 && event.keyCode<=40)) {
+                        var inputVal = $(this).val();
+                        $(this).val(inputVal.replace(/[^a-z0-9]/gi,''));
+                    }
+                });
+                $("#onlyHangul").keyup(function(event){
+                    if (!(event.keyCode >=37 && event.keyCode<=40)) {
+                        var inputVal = $(this).val();
+                        $(this).val(inputVal.replace(/[a-z0-9]/gi,''));
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        숫자만: <input type="text" id="onlyNumber" /> <br />
+        영문만: <input type="text" id="onlyAlphabet" /> <br />
+        영문,숫자만:<input type="text" id="notHangul" /><br />
+        한글만:<input type="text" id="onlyHangul" /><br />
+        keyCode: <input type="text" id="input1" />
+        <div id="result">
+        </div>
+    </body>
+</html>

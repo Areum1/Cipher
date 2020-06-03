@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+        }
+    </style>
+
+</head>
+
+<body>
+    암호화에 쓰일 키 입력해주세요 <input type="text" id="key"> <br>
+    암호화할 문자열 입력해주세요 <input type="text" id="str"> <br>
+    암호문 <input type="text" id="encryption"> <br>
+    복호문 <input type="text" id="decryption"> <br>
+
+    <button onclick="init()">무슨 버튼인데 버튼</button>
+    <script>
+        var key = document.getElementById("key"); // 암호화에 쓰일 키
+        var str = document.getElementById("str"); // 암호화할 문자열
+        var enc = document.getElementById("encryption");
+        var dec = document.getElementById("decryption");
+        var alphabetBoard = Array(Array(5), Array(5), Array(5), Array(5), Array(5));
+        var keyForSet = "";
+        var blankCheck = "";
+        var zCheck = "";
+        var oddFlag = false; // 
+        var enc_result = ""; // 암호화 한 결과
+
+        // 모든 함수 실행은 여기서
+        function init() {
+            setBoard();
+            setStr();
+            strEncryption(key.value, str.value);
+            strDecryption(key.value, enc_result, zCheck);
+        }
+
+        // alphabetBoard 배열에 중복없이 넣기
+        function setBoard() {
+
+            key.value = (key.value).replace(/ /g,"");
+            str.value = (str.value).replace(/ /g,"");
+            key.value = (key.value).toLowerCase();
+
+            var duplicationFlag = false; // 중복 검열
+            var keyLengthCount = 0; 
+
+            key.value += "abcdefghijklmnopqrstuvwxyz";
+
+            // 중복 처리 (key.value) 사용해야함
+            for (let i = 0; i < (key.value).length; i++) {
+
+                for (let j = 0; j < keyForSet.length; j++) {
+                    if ((key.value).charAt(i) === keyForSet.charAt(j)) {
+                        duplicationFlag = true;
+                        break;
+                    }
+                    
+                }
+                if (!(duplicationFlag)) keyForSet += (key.value).charAt(i);
+                duplicationFlag = false;
+            }
+            key.value = keyForSet;
+
+            //배열에 대입
+            for (let i = 0; i < alphabetBoard.length; i++) {
+                for (let j = 0; j < alphabetBoard[i].length; j++) {
+                    alphabetBoard[i][j] = keyForSet.charAt(keyLengthCount++);
+                }
+            }
+        }
+
+        function setStr() {
+            for (let i = 0; i < (str.value).length; i++) {
+                if ((str.value).charAt(i) == 'z') //z를 q로 바꿔줘서 처리함.
+                {
+                    str.value = (str.value).substring(0, i) + 'q' + (str.value).substring(i + 1, (str.value).length);
+                    zCheck += 1;
+                }
+                else {
+                    zCheck += 0;
+                }
+            }
+        }
+
+        function strEncryption(key, str) {
+            var playFair = ""; // 바꾸기 전 쌍자암호를 저장할 곳
+            var encPlayFair = ""; // 바꾼 후 쌍자암호를 저장할 곳
+            var x1 = 0, x2 = 0, y1 = 0, y2 = 0; // 두 글자의 각각의 행, 열 값
+            var encStr = "";
+
+            for (let i = 0; i < str.length; i +=2) // arraylist 세팅
+            {
+                var tmpArr = new Array(2);
+                tmpArr[0] = str.charAt(i);
+                for(let j=0; j < str.length; j++){
+                    if (str.charAt(i) === str.charAt(i + 1)) //글이 반복되면 x추가
+                    {
+                        tmpArr += 'x';
+					    i--;
+                    } 
+                    else {
+                        tmpArr[1] = str.charAt(i + 1);
+                    }
+                }
+                playFair += tmpArr;
+                playFair = playFair.replace(/,/gi,"");
+                
+            }
+
+            if(playFair.length %2 === 1) {
+                playFair += 'x';
+                oddFlag = true;
+            }
+
+            for (let i = 0; i < playFair.length; i+=2)
+            {
+                var tmpArr = new Array(2);
+                for (let j = 0; j < alphabetBoard.length ; j++ ) //쌍자암호의 각각 위치체크
+                {
+                    for (let k = 0; k < alphabetBoard[j].length; k++ )
+                    {
+                        if (alphabetBoard[j][k] === playFair[i]) {
+                            x1 = j;
+                            y1 = k;
+                        }
+                        if (alphabetBoard[j][k] === playFair[i+1]) {
+                            x2 = j;
+                            y2 = k;
+                        }
+                    }
+                }
+
+                if (x1 == x2) //행이 같은경우
+                {
+                    tmpArr[0] = alphabetBoard[x1][(y1 + 1) % 5];
+                    tmpArr[1] = alphabetBoard[x2][(y2 + 1) % 5];
+                }
+                else if (y1 == y2) //열이 같은 경우
+                {
+                    tmpArr[0] = alphabetBoard[(x1 + 1) % 5][y1];
+                    tmpArr[1] = alphabetBoard[(x2 + 1) % 5][y2];
+                }
+                else //행, 열 모두 다른경우
+                {
+                    tmpArr[0] = alphabetBoard[x2][y1];
+                    tmpArr[1] = alphabetBoard[x1][y2];
+                }
+
+                for(let i=0; i < tmpArr.length; i++){
+                    encPlayFair += tmpArr[i];
+                }
+                encPlayFair += " ";
+            }
+
+            // if(encPlayFair.lastIndexOf(",") !== -1)
+            //     encPlayFair=encPlayFair.substring(0, encPlayFair.length-1);
+
+            for (let i = 0; i < encPlayFair.length; i++)
+            {
+                encStr += encPlayFair[i][0] + "" + encPlayFair[i][1] + " ";
+            }
+            enc.value = encPlayFair;
+            enc_result = encPlayFair.replace(/ /gi,"");;
+        }
+        
+        function strDecryption(key, str, zChk) {
+            var playFair = new Array(); // 바꾸기 전 쌍자암호를 저장할 곳
+            var decPlayFair = new Array(); // 바꾼 후 쌍자암호를 저장할 곳
+            var x1 = 0, x2 = 0, y1 = 0, y2 = 0; // 두 글자의 각각의 행, 열 값
+            var decStr = "";
+
+            for(let i = 0 ; i < str.length ; i+=2)
+            {
+                var tmpArr = new Array();
+                tmpArr[0] = str.charAt(i);
+                tmpArr[1] = str.charAt(i+1);
+                playFair.push(tmpArr);
+            }
+            for (let i = 0; i < playFair.length; i++)
+            {
+                var tmpArr = new Array();
+                for (let j = 0; j < alphabetBoard.length ; j++ ) //쌍자암호의 각각 위치체크
+                {
+                    for (let k = 0; k < alphabetBoard[j].length; k++ )
+                    {
+                        if (alphabetBoard[j][k] === playFair[i][0]) {
+                            x1 = j;
+                            y1 = k;
+                        }
+                        if (alphabetBoard[j][k] === playFair[i][1]) {
+                            x2 = j;
+                            y2 = k;
+                        }
+                    }
+                }
+
+                console.log("if 문 시작하기 전에 확인 x1,x2,y1,y2 : ",x1,x2,y1,y2);
+                if (x1 === x2) //행이 같은경우
+                {
+                    tmpArr[0] = alphabetBoard[x1][(y1 + 4) % 5];
+                    tmpArr[1] = alphabetBoard[x2][(y2 + 4) % 5];
+                }
+                else if (y1 === y2) //열이 같은 경우
+                {
+                    tmpArr[0] = alphabetBoard[(x1 + 4) % 5][y1];
+                    tmpArr[1] = alphabetBoard[(x2 + 4) % 5][y2];
+                }
+                else //행, 열 모두 다른경우
+                {
+                    tmpArr[0] = alphabetBoard[x2][y1];
+                    tmpArr[1] = alphabetBoard[x1][y2];
+                }
+
+                decPlayFair.push(tmpArr);
+            }
+
+            for(let i = 0 ; i < decPlayFair.length ; i++) //중복 문자열 돌려놓음
+            {
+                if(i!=decPlayFair.length-1 && decPlayFair[i][1]=='x' && decPlayFair[i][0]==decPlayFair[i+1][0])
+                {	
+                    decStr += decPlayFair[i][0];
+                }
+                else
+                {
+                    decStr += decPlayFair[i][0]+""+decPlayFair[i][1];
+                }
+            }
+
+            for(let i = 0 ; i < zChk.length; i++)//z위치 찾아서 q로 돌려놓음
+            {
+                if(zChk.charAt(i) == '1') {
+                    decStr = decStr.substring(0,i)+'z'+decStr.substring(i+1,decStr.length);
+                }
+            }
+
+            dec.value = decStr;
+        }
+    </script>
+</body>
+
+</html>
+
+<!-- 
+해야할 것
+소, 대문자 구분 없이 답이 나오게 고치기 
+
+setBoard()를 확인하는 방법
+//배열에 대입한 것 확인
+for (let i = 0; i < alphabetBoard.length; i++) {
+    for (let j = 0; j < alphabetBoard[i].length; j++) {
+        console.log(alphabetBoard[i][j] + "-");
+    }
+    console.log();
+}
+
+할 일
+- 첫 번째 중복은 x붙어서 잘 나오는데 그 이후는 안 나옴
+- 코드 정리
+- css (이건 내일 학교가서 해도 괜찮을 듯)
+- z와 i/j 처리?
+- 키에 z를 쓰면 y가 알파벳 판에서 사라지네요...?
+- input 타입인데 못 쓰는 input?
+-->
